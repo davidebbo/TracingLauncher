@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <location path="%XDT_SITENAME%" xdt:Locator="Match(path)">
+    <system.webServer>
+      <httpPlatform processPath="%XDT_EXTENSIONPATH%\TracingLauncher.exe" arguments="&quot;%AZURE_TOMCAT8_HOME%\bin\startup.bat&quot;" xdt:Transform="Replace" />
+    </system.webServer>
+  </location>
+</configuration>
