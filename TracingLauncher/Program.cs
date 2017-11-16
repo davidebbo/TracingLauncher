@@ -10,16 +10,23 @@ namespace TracingLauncher
 {
     class Program
     {
+        static TextWriter _logWriter;
+
         static int Main(string[] args)
         {
+            string dir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+            string logFilePath = Path.Combine(dir, "TracingLauncherLogs.log");
+            _logWriter = new StreamWriter(logFilePath);
+
+            _logWriter.WriteLine("Starting TracingLauncher");
+
             try
             {
                 return MainAsync(args).Result;
             }
             catch (Exception e)
             {
-                string dir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-                File.WriteAllText(Path.Combine(dir, "TracingLauncherErrors.log"), e.ToString());
+                _logWriter.WriteLine(e.ToString());
                 Console.WriteLine(e.ToString());
                 return 1;
             }
@@ -34,7 +41,16 @@ namespace TracingLauncher
             }
 
             string app = args[0];
-            string arguments = String.Join(" ", args.Skip(1));
+
+            var argumentsBuilder = new StringBuilder();
+            for (int i=1; i<args.Length; i++)
+            {
+                argumentsBuilder.Append($"\"{args[i]}\" ");
+            }
+            string arguments = argumentsBuilder.ToString();
+
+            _logWriter.WriteLine($"App: {args[0]}");
+            _logWriter.WriteLine($"Args: {arguments}");
 
             var psi = new ProcessStartInfo
             {
