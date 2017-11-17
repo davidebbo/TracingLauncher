@@ -16,19 +16,21 @@ namespace TracingLauncher
         {
             string dir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
             string logFilePath = Path.Combine(dir, "TracingLauncherLogs.log");
-            _logWriter = new StreamWriter(logFilePath);
 
-            _logWriter.WriteLine("Starting TracingLauncher");
+            using (_logWriter = new StreamWriter(logFilePath))
+            {
+                _logWriter.WriteLine("Starting TracingLauncher");
 
-            try
-            {
-                return MainAsync(args).Result;
-            }
-            catch (Exception e)
-            {
-                _logWriter.WriteLine(e.ToString());
-                Console.WriteLine(e.ToString());
-                return 1;
+                try
+                {
+                    return MainAsync(args).Result;
+                }
+                catch (Exception e)
+                {
+                    _logWriter.WriteLine(e.ToString());
+                    Console.WriteLine(e.ToString());
+                    return 1;
+                }
             }
         }
 
@@ -36,18 +38,12 @@ namespace TracingLauncher
         {
             if (args.Length < 1)
             {
-                Console.WriteLine("Syntax: TracingLauncher.exe SomeApp.exe arg1 arg2 ...");
+                Console.WriteLine("Syntax: TracingLauncher.exe SomeApp.exe args");
                 return 1;
             }
 
             string app = args[0];
-
-            var argumentsBuilder = new StringBuilder();
-            for (int i=1; i<args.Length; i++)
-            {
-                argumentsBuilder.Append($"\"{args[i]}\" ");
-            }
-            string arguments = argumentsBuilder.ToString();
+            string arguments = args[1];
 
             _logWriter.WriteLine($"App: {args[0]}");
             _logWriter.WriteLine($"Args: {arguments}");
