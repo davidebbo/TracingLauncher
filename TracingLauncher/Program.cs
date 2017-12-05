@@ -14,10 +14,13 @@ namespace TracingLauncher
 
         static int Main(string[] args)
         {
-            string dir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
-            string logFilePath = Path.Combine(dir, "TracingLauncherLogs.log");
+            bool loggingEnabled = Environment.GetEnvironmentVariable("TRACINGLAUNCHER_ENABLE_LOGGING") == "1";
+            string roleInstance = Environment.GetEnvironmentVariable("RoleInstance") ?? Environment.MachineName;
 
-            using (_logWriter = new StreamWriter(logFilePath))
+            string dir = Path.GetDirectoryName(typeof(Program).Assembly.Location);
+            string logFilePath = Path.Combine(dir, $"TracingLauncherLogs_{roleInstance}.log");
+
+            using (_logWriter = loggingEnabled ? new StreamWriter(logFilePath) : TextWriter.Null)
             {
                 _logWriter.WriteLine("Starting TracingLauncher");
 
