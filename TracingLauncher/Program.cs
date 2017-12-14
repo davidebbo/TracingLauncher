@@ -50,17 +50,25 @@ namespace TracingLauncher
 
         static async Task<int> MainAsync(string[] args)
         {
+            _logWriter.WriteLine($"Arg count: {args.Length}");
+            for (int i = 0; i < args.Length; i++)
+            {
+                _logWriter.WriteLine($"Argument {i}: {args[i]}");
+            }
+
             if (args.Length < 2)
             {
+                _logWriter.WriteLine($"Invlalid argument count {args.Length}.");
                 Console.WriteLine("Syntax: TracingLauncher.exe LogStringPrefixRegex SomeApp.exe args");
                 return 1;
             }
 
             _logPrefix = args[0];
             string app = args[1];
-            string arguments = args[2];
+            string arguments = args.Length == 3 ? args[2] : null;
 
-            _logWriter.WriteLine($"App: {args[0]}");
+            _logWriter.WriteLine($"Prefix regex: {_logPrefix}");
+            _logWriter.WriteLine($"App: {app}");
             _logWriter.WriteLine($"Args: {arguments}");
 
             var psi = new ProcessStartInfo
@@ -155,7 +163,7 @@ namespace TracingLauncher
         {
             if (_errorStringBuilder.Length > 0)
             {
-                Trace.TraceInformation(_errorStringBuilder.ToString());
+                Trace.TraceError(_errorStringBuilder.ToString());
                 _errorStringBuilder.Clear();
             }
         }
