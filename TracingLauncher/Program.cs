@@ -173,7 +173,7 @@ namespace TracingLauncher
         {
             lock (_infoStringBuilder)
             {
-                if ((DateTime.UtcNow - _infoLogTime).Ticks > FlushPeriod)
+                if ((DateTime.UtcNow - _infoLogTime).TotalMilliseconds > FlushPeriod)
                 {
                     FlushInformation();
                 }
@@ -181,7 +181,7 @@ namespace TracingLauncher
 
             lock (_errorStringBuilder)
             {
-                if ((DateTime.UtcNow - _errorLogTime).Ticks > FlushPeriod)
+                if ((DateTime.UtcNow - _errorLogTime).TotalMilliseconds > FlushPeriod)
                 {
                     FlushError();
                 }
